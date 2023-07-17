@@ -8,9 +8,10 @@
   return Object.prototype.toString.call(data).slace(8,-1).toLowCase() === 'array';
 } */
 
-const isArray = data => Object.prototype.toString.call(data).slace(8,-1).toLowCase() === 'array';
+// [Object Array]
+const isArray = data => Object.prototype.toString.call(data).slice(8,-1).toLowCase() === 'array';
 
-const isNull = data => Object.prototype.toString.call(data).slace(8,-1).toLowCase() === 'null';
+const isNull = data => Object.prototype.toString.call(data).slice(8,-1).toLowCase() === 'null';
 
 /* 요소 순환 ---------------------------- */
 
@@ -112,7 +113,7 @@ const user = ['선범', '효윤', '준석'];
 
 // concat
 // const newArray = arr.concat(user);
-const newArray = [...arr, ...user, 'javascript', 'css']; // 더 좋다
+const newArray = [...arr, ...user, 'javascript', 'css']; // 더 좋다 (스프레드 신탁스)
 // console.log(newArray);
 
 // slice
@@ -136,6 +137,7 @@ const toSpliced = arr.toSpliced(2, 0, 'javascript', 'css', 'react');
 // console.log(toSpliced);
 
 // map
+// forEach는 값을 뱉지 않고, map은 값을 배열로 반환
 const job = people.map((item, index) => {
   // return item.profession;
   // return `<div>${item.profession}</div>` // 이대로 출력하면 배열이기 때문에 콤마(,)도 같이 출력된다.
@@ -175,20 +177,20 @@ job.forEach((item) => {
 
 /* 요소 포함 여부 확인 ---------------------- */
 
-// indexOf 앞에서부터
+// indexOf 앞에서부터 10이 몇번째에 있는지 index 번호를 반환
 console.log(arr.indexOf(10));
 
 // lastIndexOf 뒤에서부터
 console.log(arr.lastIndexOf(10));
 
 // includes
-console.log(arr.includes(1000))
+console.log(arr.includes(1000));
 
 /* 요소 찾기 ------------------------------ */
 
 // find 배열에 특정 요소가 있는지 확인하고, 해당 아이템을 반환(1개만)
 const find = people.find((item) => {
-  return item.id > 1
+  return item.id > 1;
 })
 
 console.log(find);
@@ -216,7 +218,7 @@ const totalAge = people.reduce((acc, cur) => {
   return acc + cur.age;
 }, 0) 
 // 초기값을 지정해주지 않으면 people의 arr에 첫번째 객체가 와서 문자에 숫자를 접합하게 된다. [object Object]40305218
-// 초기값을 0으로 지정해주면 0에다가 숫자를 더하게 된다.
+// 초기값(arr)을 0으로 지정해주면 0에다가 숫자를 더하게 된다.
 
 console.log(totalAge);
 
@@ -230,7 +232,7 @@ document.body.insertAdjacentHTML('beforeend', template);
 
 const str = '봉석 윤진 예나 시연 진만 정아';
 
-// split : 문자 -> 베얄
+// split : 문자 -> 배열
 const stringToArray = str.split(' ');
 
 console.log(stringToArray);
