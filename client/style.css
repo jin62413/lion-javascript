@@ -1,9 +1,10 @@
-body {
+/* body {
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-}
+} */
+
 .userCard{
   max-width: 350px;
   display:flex;
@@ -29,4 +30,64 @@ body {
   top: 50%;
   transform: translateY(-50%);
   background: #000;
+}
+
+.ground{
+  width: 400px;
+  height: 300px;
+  border: 5px solid black;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+}
+
+
+#ball{
+  transition: transform 0.2s;
+}
+
+section {
+  background-color: orange;
+  padding: 2rem;
+}
+
+article {
+  background-color: dodgerblue;
+  padding: 2rem;
+}
+
+p {
+  background-color: hotpink;
+  padding: 2rem;
+}
+
+.container{
+  padding: 1rem;
+  border: 1px solid black;
+}
+
+ul{
+  list-style: none;
+  display:flex;
+  gap:1rem;
+  justify-content: center;
+}
+
+ul > li{
+  background: rgba(0, 157, 255, 0.2);
+  padding:1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  
+}
+
+ul > li:hover{
+  background: rgba(0, 157, 255, 0.654);
+}
+
+button{
+  background:transparent;
+  border: none;
+  cursor: inherit;
 }
