@@ -14,6 +14,7 @@ function page1() {
   const result = getNode('.result')
   const clear = getNode('#clear');
 
+  // [page-1]
   // 1. input value값 가져오기
   // 2. 두 수의 합 더하기
   // 3. result 출력하기
