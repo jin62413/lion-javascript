@@ -18,7 +18,7 @@ export const memo = (key, callback) => {
 
 // setter
 memo('cube', () => getNode('#cube'));
-memo('cube',()=> 123);
+// memo('cube',()=> 123);
 
 // getter
 console.log( memo('cube') ); // div#cube 
