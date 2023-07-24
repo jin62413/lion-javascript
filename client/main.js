@@ -75,6 +75,11 @@ function handleSubmit(e){
 function handleCopy() {
   const text = resultArea.textContent;
   
+  // clipboard API의 writeText()메소드는 매개변수로 클립보드에 복사할 텍스트 하나만 받음
+  // writeText()는 비동기이기 때문에 promise를 리턴
+  // 이 promise는 클립보드가 성공적으로 업데이트 되었으면 resolve, 아니라면 reject
+  // clipboard API는 개인정보와 보안 때문에 브라우저가 제어하고 있는데
+  // 브라우저가 사용자 클립보드에 접근하는 것과 해당 데이터를 복사하는 것을 허가한 후에 작업을 수행하기 때문에 비동기로 처리
   copy(text).then(() => {
     showAlert('.alert-success', '클립보드 복사 완료!')
   })
