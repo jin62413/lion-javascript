@@ -83,6 +83,7 @@ const handleRollingDice = ((e) => {
     isClicked = !isClicked;
   }
 })(); // 즉시 실행 함수
+// addEventListener('click', handleRollingDice()); 이렇게 사용할 수 있지만 꼬리자르기(깔끔하게)하려고 사용
 
 
 // 회차 늘어날 수 있도록
