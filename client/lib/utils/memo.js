@@ -26,5 +26,5 @@ export const memo = (() => {
 // memo('cube',()=> 123);
 
 // getter
-console.log( memo('cube') ); // div#cube 
+// console.log( memo('cube') ); // div#cube
 // 객체를 만들어서 key:value 쌍으로 저장
