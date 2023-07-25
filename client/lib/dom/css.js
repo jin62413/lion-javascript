@@ -66,7 +66,13 @@ function getCss(node,prop){
 }
 
 
-
+/**
+ * 
+ * @param {HTMLElement} node html요소
+ * @param {string} prop 프로퍼티
+ * @param {string} value 값
+ * @returns css 속성
+ */
 export const css = (node,prop,value) => {
   return !value ? getCss(node,prop) : setCss(node,prop,value);
 }
