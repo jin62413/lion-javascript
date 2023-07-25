@@ -1,4 +1,4 @@
-import { attr, clearContents, diceAnimation, endScroll, getNode, getNodes, insertLast } from "./lib/index.js";
+import { attr, clearContents, diceAnimation, endScroll, getNode, getNodes, insertLast, memo } from "./lib/index.js";
 
 
 // [phase-1] 주사위 굴리기
@@ -35,7 +35,8 @@ import { attr, clearContents, diceAnimation, endScroll, getNode, getNodes, inser
 // getNodes로 buttonGroup의 button들을 배열로 받아와 하나씩 넣어주기
 const [startButton, recordButton, resetButton] = getNodes('.buttonGroup > button');
 const recordListWrapper = getNode('.recordListWrapper');
-const tbody = getNode('.recordList tbody');
+// const tbody = getNode('.recordList tbody');
+memo('@tbody', ()=> getNode('.recordList tbody')) // setter // @는 html 태그라는 걸 명시적으로 보여주기 위해 쓴 것 안써도 됨
 
 
 let count = 0;
@@ -54,9 +55,9 @@ function createItem(value) {
 
 function renderRecordItem() {
     // 큐브의 data-dice값만 가져오기
-    const diceValue = +attr('#cube', 'data-dice');
+    const diceValue = +attr(memo('cube'), 'data-dice');
   
-    insertLast(tbody, createItem(diceValue));
+    insertLast(memo('@tbody'), createItem(diceValue));
 
     endScroll(recordListWrapper);
 }
@@ -101,7 +102,7 @@ function handleReset() {
   recordButton.disabled = true;
   resetButton.disabled = true;
 
-  clearContents(tbody); // 리스트 내용 없어짐
+  clearContents(memo('@tbody')); // 리스트 내용 없어짐
 
   // 내용이 없어져도 값은 남아있어서 따로 초기화
   count = 0;
