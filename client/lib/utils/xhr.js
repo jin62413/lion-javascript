@@ -10,6 +10,8 @@
 
 */
 
+import { refError } from "../error/index.js";
+
 /* 
 // 기본 문법
 // XHR로 비동기 통신을 하게 되면 open, send가 필요하고 그 사이에 이벤트 리스너가 필요
@@ -107,13 +109,14 @@ export function xhr({
 
   // Object.entries를 사용해 header에 있는 객체들을 [[key, value], [key, value]] 이렇게 배열로 받음
   // 배열 구조 분해를 통해 key, value값을 배열에서 빼냄
-  // forEach를 통해 배열을 setRequestHeader에 각각 넣어줌, [(key, value), (key, value)]
+  // forEach를 통해 배열[(key, value), (key, value)]을 setRequestHeader에 각각 넣어줌, 
   Object.entries(headers).forEach(([key, value]) => {
     // Headers에서 content-Type의 application/json형식으로 읽을 수 있도록 알려줌(설명서처럼)
     xhr.setRequestHeader(key, value);
   })
   
   xhr.addEventListener('readystatechange', () => {
+    // 객체 구조 분해를 하지 않으면 xhr.status, xhr.readyState 이런식으로 써야함 -> 불편
     const { status, readyState, response } = xhr;
     if (readyState === 4) {
       if (status >= 200 && status < 400) {
@@ -130,7 +133,7 @@ export function xhr({
   xhr.send(JSON.stringify(body)); 
 }
 
-// return은 통신을 기다려주지 않아서 undefiend가 뜸
+// return은 통신이 끝날 때까지 기다려주지 않아서 undefiend가 뜸
 // 함수 본문을 넘겨서(콜백 함수) 완벽하게 통신이 이루어졌을 때 함수를 실행
 // 결과 값을 onSuccess, onFail로 넘겨줌
 // 파라미터에 들어온 결과 값을 찍어줌
@@ -173,8 +176,11 @@ xhr({
 // 3. 설계자: 그렇다면 함수 안에 메서드(객체)를 넣어 버리자!!
 
 // xhr(함수)을 dir로 겁색해보면 get이라는 함수를 가지고 있다.
-// xhr 함수에 get이라는 키 값을 넣고 value를 함수로 설정
 // 통신할 서버 주소, 성공했을 때 실행될 콜백 함수, 실패했을 때 실행될 콜백 함수를 메소드로 다시 정의하는 것
+
+// get 메서드를 만들어줌
+// xhr({}) 객체에 매개변수를 지정해준다.
+// xhr.get을 실행하면 결국 xhr이 실행 => 동일한 값(url, onSuccess...) 전달
 
 // /** */ 자동으로 전달할 파라미터 값을 생성
 // 사용자가 함수를 사용할 때 입력해야 할 값을 설명해주는 설명서를 생성하는 것
@@ -253,4 +259,93 @@ xhr.delete = (url, onSuccess, onFail) => {
 //   },
 //   () => {}
 // )
-// 유저 랜더링(data)
+
+
+/* ------------------------------- promise API ------------------------------ */
+
+
+const defaultOptions = {
+  method: 'GET',
+  url: '',
+  body: null,
+  errorMessage: '서버와의 통신이 원할하지 않음',
+  headers: {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*'
+  }
+}
+
+export function xhrPromise(options) {
+
+  // mixin
+  // let config = {...defaultOptions, options};
+  // assign은 객체의 얕은 복사 메서드
+  // assign을 사용할 때는 빈 객체가 필요함, 빈 객체가 없으면 깊은 복사가 된다.
+  // 첫번째 빈 객체에 두번째, 세번째 인자를 넣어줌
+  const {method, url, body, errorMessage, headers} = Object.assign({}, defaultOptions, options);
+  if(!url) refError('url은 필수에요');
+  
+  const xhr = new XMLHttpRequest();
+  
+  // 서버 열기
+  xhr.open(method, url); // open은 앞에 있어야 함
+  
+  Object.entries(headers).forEach(([key, value]) => {
+    xhr.setRequestHeader(key, value);
+  })
+
+  // 서버와 통신하기, json을 보내는 역할이라 위치와 시간들이 상관이 없음
+  xhr.send(JSON.stringify(body)); // 순서 상관 없음, return 있어서 위에 작성
+
+  return new Promise((resolve, reject) => {
+    xhr.addEventListener('readystatechange', () => {
+
+      if (xhr.readyState === 4) {
+        if (xhr.status >= 200 && xhr.status < 400) {
+          resolve(JSON.parse(xhr.response));
+        } else{
+          reject({message: errorMessage});
+        }
+      }
+    })
+  })
+}
+
+// xhrPromise({
+//   url: 'https://jsonplaceholder.typicode.com/users'
+// })
+// .then((res) => {
+//   res.forEach((item) => {
+//     console.log(item);
+//   })
+// });
+
+// xhrPromise.get을 실행하면 xhrPromise 함수가 실행되면 프로미스 객체가 담긴 상태
+// 함수를 호출했는데 return값이 없어서 undefiend가 나옴, return을 해줘야 값을 뱉을 수 있음
+xhrPromise.get = (url) => {
+  return xhrPromise({ url })
+}
+
+xhrPromise.post = (url, body) => {
+  return xhrPromise({ 
+    url,
+    body,
+    method:'POST'
+  })
+}
+
+xhrPromise.delete = (url) => {
+  return xhrPromise({ 
+    url,
+    method:'DELETE'
+  })
+}
+
+xhrPromise.put = (url, body) => {
+  return xhrPromise({
+    url,
+  body,
+  method: 'PUT'
+  })
+}
+// xhrPromise.get('https://jsonplaceholder.typicode.com/users');
